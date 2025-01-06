@@ -4,15 +4,23 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 
+// Define the Item interface
+interface Item {
+  id: string;
+  name: string;
+  description?: string;
+}
+
 const UpdateItems = () => {
-  const [items, setItems] = useState([]);
-  const [selectedItem, setSelectedItem] = useState<any>(null);
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [items, setItems] = useState<Item[]>([]);
+  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+  const [name, setName] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [error, setError] = useState<string>("");
+  const [success, setSuccess] = useState<string>("");
   const router = useRouter();
 
+  // Fetch items on component mount
   useEffect(() => {
     const fetchItems = async () => {
       try {
@@ -30,12 +38,14 @@ const UpdateItems = () => {
     fetchItems();
   }, []);
 
-  const handleSelectItem = (item: any) => {
+  // Handle selecting an item to update
+  const handleSelectItem = (item: Item) => {
     setSelectedItem(item);
     setName(item.name);
     setDescription(item.description || "");
   };
 
+  // Handle updating the selected item
   const handleUpdateItem = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -51,6 +61,7 @@ const UpdateItems = () => {
       });
 
       setSuccess("Item updated successfully!");
+      setError("");
 
       // Update the item in the list
       setItems((prevItems) =>
@@ -144,7 +155,7 @@ const UpdateItems = () => {
           marginBottom: "30px",
         }}
       >
-        {items.map((item: any) => (
+        {items.map((item) => (
           <div
             key={item.id}
             onClick={() => handleSelectItem(item)}
